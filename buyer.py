@@ -1,22 +1,13 @@
-"""
-Buyer will have money, spent_money, and bought_cars attributes. You will pass an arbitrary value to
-Buyer money at the time of creating the Buyer object, and spent_money
-should have an initial value of 0 (this attribute will show the amount spent by the buyer).
-The Buyer class must have the following methods:
-
-buy - will buy a car from the seller. It will be a public method
-return_carr - will return the car (all updates resulting from it must be done). It will be a public method
-change_money - will increase/decrease the amount. It will be a private method
-add_bought_cars - will add the bought car to bought_cars. The car model, seller's name/surname/city,
- month, and date of the transaction must be specified in the following format: "year-month-day".
-print_my_cars - will show the buyer's purchased cars. It will be a public method
-
-"""
 from person import Person
 from car import Car
 
 
 class Buyer(Person):
+    """
+    Buyer class inherits from Person and will have money,
+    spent_money, and bought_cars attributes. The class will have methods for buying cars,
+    returning cars, adding cars to the bought_cars list, and changing money.
+    """
 
     def __init__(self, name, surname, city, money):
         super().__init__(name, surname, city)
@@ -32,34 +23,42 @@ class Buyer(Person):
     def spent_money(self):
         return self._spent_money
 
-    @property
-    def bought_cars(self):
-        return self._bought_cars
-
     @money.setter
     def money(self, value):
-        self._money = value
+        if type(value) is int:
+            self._money = value
+        else:
+            print("Money has to be type of int! ")
 
     @spent_money.setter
     def spent_money(self, value):
-        self._spent_money = value
+        if type(value) is int:
+            self._spent_money = value
+        else:
+            print("Money has to ve type of int! ")
+
+    def set_money(self, money):
+        self.money = money
 
     def buy(self, car: Car):
-        if self.money >= car.price:
-            self.money -= car.price
-            self.bought_cars.append(car)
+        price = car.price + (car.price * car.discount)
+        if self.money < price:
+            print("You don have enaught money! ")
+            return
         else:
-            print("No souch money! ")
+            self.money -= price
+            self.spent_money += price
+            self._bought_cars.append(car)
+            car.buyer = self
 
-    def return_car(self, returnable: Car):
-        for car in self.bought_cars:
-            if car.id == returnable.id:
-                self.bought_cars.remove(car)
-                self.spent_money -= car.price
-                self.money += car.price
-            else:
-                print("Theres not such a car! ")
+    def return_car(self, car: Car):
+        if car in self._bought_cars:
+            self.money += car.price
+            self.spent_money -= car.price
+            self._bought_cars.remove(car)
+        else:
+            print(f'{self.name} dont have a {car.model}! ')
 
     def print_my_cars(self):
-        for car in self.bought_cars:
-            print(f'{car.name} with price {car.price} and id {car.id}')
+        for car in self._bought_cars:
+            print(f'{car.model} with price {car.price} and id {car.uid} from {car.seller.name} seller')
