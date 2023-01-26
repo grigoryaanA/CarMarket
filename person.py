@@ -1,8 +1,7 @@
-"""We will have a Person superclass. 2 classes will inherit from Person: Buyer and Seller classes.
-Person will have a name, surname, and city attributes."""
-
-
 class Person:
+    """
+    super class for buyer and seller classes
+    """
 
     def __init__(self, name, surname, city):
         self._name = name
